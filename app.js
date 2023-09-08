@@ -53,11 +53,11 @@ var characters = {
     }
 }
 
-var addedCharacters = [];
+var addedCharacters = ["Elrond"];
 
 var chatHistory = [];
 var pastConversation = [];
-var characterCounter = 0;
+var characterCounter = -1;
 var messageCount = 0;
 var fiftyMessages = [];
 var contactMemory = "";
@@ -123,7 +123,7 @@ let RecapCall = async () => {
     var memoryPrompt = "Summarize this chat group summarization alongside the following chat group messages (that came afterwards) highlighting information but keeping it brief: " + contactMemory + fiftyMessages;
 
     var completionForMemory = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: memoryPrompt}],
     });
 
@@ -155,6 +155,8 @@ let APIcall = async () => {
         
 
             character = addedCharacters[characterCounter];
+            console.log(characterCounter);
+            console.log(character);
         
             completion_text_memory = "";
             completion_text_day = "";
@@ -164,7 +166,7 @@ let APIcall = async () => {
 
 
                 completionForActivity = await openai.chat.completions.create({
-                    model: "gpt-4",
+                    model: "gpt-3.5-turbo",
                     messages: [{ role: "user", content: newActivityPrompt}],
                 });
 
@@ -174,7 +176,7 @@ let APIcall = async () => {
                 lengthPrompt = "How long would it take in average for " + characters[character]["description"] + " to finish doing the given prompt in minutes, and as a number. Desired Format: 30? " + "###" + characters[character]["currentActivity"] + "###";
 
                 completionForLength = await openai.chat.completions.create({
-                    model: "gpt-4",
+                    model: "gpt-3.5-turbo",
                     messages: [{ role: "user", content: lengthPrompt}],
                         
                 });
@@ -189,7 +191,7 @@ let APIcall = async () => {
                 lengthPrompt = "Tell me the probability that " + characters[character]["description"] + " would respond to the notification on a phone while doing this thing: ###" + characters[character]["currentActivity"] + "### as a number from 1 to 100, the higher the number, the more likely they are to check the phone. Desired Format: 30";
                     
                 completionForLength = await openai.chat.completions.create({
-                    model: "gpt-4",
+                    model: "gpt-3.5-turbo",
                     messages: [{ role: "user", content: lengthPrompt}],
                 });
 
@@ -205,7 +207,7 @@ let APIcall = async () => {
             
 
             completionForDay = await openai.chat.completions.create({
-                model: "gpt-4",
+                model: "gpt-3.5-turbo",
                 messages: [{ role: "user", content: activityPrompt}],
             });
 
@@ -221,7 +223,7 @@ let APIcall = async () => {
                 
 
                 const completion = await openai.chat.completions.create({
-                    model: "gpt-4",
+                    model: "gpt-3.5-turbo",
                     messages: [{ role: "user", content: prompt}],
                 });
 
@@ -237,7 +239,7 @@ let APIcall = async () => {
 
 
 function goahead() {
-    console.log("Again"); characterCounter++; if(characterCounter > addedCharacters.length + 1) {characterCounter = 0;} APIcall(); 
+    console.log("Again"); characterCounter++; if(characterCounter >= addedCharacters.length) {characterCounter = 0;} APIcall(); 
 }
 
 goahead();
